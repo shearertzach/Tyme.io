@@ -1,12 +1,12 @@
 import React from 'react'
 import styles from './Header.module.css'
 import { useDispatch } from 'react-redux'
-import { signIn } from '../../../redux/Auth/authActions'
+import { signIn, signOut } from '../../../redux/Auth/authActions'
 import { connect } from 'react-redux'
 import Loader from '../../Loader'
 import { useRouter } from 'next/router'
 
-export function Header({ user, loading }) {
+export function Header({ user, loading, error }) {
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -23,6 +23,14 @@ export function Header({ user, loading }) {
           >
             {user ? 'Dashboard' : 'Sign In'}
           </button>
+          {user && (
+            <button
+              className={styles.authButton}
+              onClick={() => dispatch(signOut())}
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
       {loading && <Loader />}
@@ -32,8 +40,8 @@ export function Header({ user, loading }) {
 
 function mapStateToProps(state) {
   const { auth } = state
-  const { user, loading } = auth
-  return { user, loading }
+  const { user, loading, error } = auth
+  return { user, loading, error }
 }
 
 export default connect(mapStateToProps)(Header)

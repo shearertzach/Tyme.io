@@ -2,6 +2,7 @@ import {
   SIGN_IN_WITH_PROVIDER_BEGIN,
   SIGN_IN_WITH_PROVIDER_SUCCESS,
   SIGN_IN_WITH_PROVIDER_FAILURE,
+  SIGN_OUT_OF_PROVIDER,
 } from './authActions'
 
 const INITIAL_STATE = {
@@ -15,19 +16,27 @@ const authReducer = (state = INITIAL_STATE, action) => {
     case SIGN_IN_WITH_PROVIDER_BEGIN:
       return {
         ...state,
-        loading: action.payload.loading,
+        loading: true,
       }
     case SIGN_IN_WITH_PROVIDER_SUCCESS:
       return {
         ...state,
-        user: action.payload.userInfo,
-        loading: action.payload.loading,
+        user: action.payload,
+        loading: false,
+        error: false,
       }
     case SIGN_IN_WITH_PROVIDER_FAILURE:
       return {
         ...state,
-        loading: action.payload.loading,
-        error: action.payload.error,
+        loading: false,
+        error: action.payload,
+      }
+    case SIGN_OUT_OF_PROVIDER:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        user: null,
       }
     default:
       return state

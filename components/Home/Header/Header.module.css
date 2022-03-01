@@ -17,6 +17,6 @@
     @apply transition-all;
   }
   .authButton {
-    @apply rounded-md border border-slate-100 px-5 py-1.5 hover:bg-slate-100 hover:text-slate-700;
+    @apply rounded-md border border-slate-100 px-5 py-1.5 hover:bg-slate-100 hover:text-slate-700 ml-5;
   }
 }
