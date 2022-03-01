@@ -3,6 +3,8 @@ import { connect, useDispatch } from 'react-redux'
 import { fetchData } from '../../redux/Dashboard/dashboardActions'
 import Loader from '../../components/Loader'
 import { useRouter } from 'next/router'
+import Timesheets from '../../components/Dashboard/Timesheets/Timesheets'
+import Sidebar from '../../components/Dashboard/Sidebar/Sidebar'
 
 function Dashboard({ user, data, loading, error }) {
   const dispatch = useDispatch()
@@ -13,7 +15,13 @@ function Dashboard({ user, data, loading, error }) {
   useEffect(() => {
     user && dispatch(fetchData(user.account_id))
   }, [])
-  return <div className="min-h-screen">{loading && <Loader />}</div>
+  return (
+    <div className="ml-72">
+      {loading && <Loader />}
+      <Sidebar />
+      <Timesheets user={user} data={data} />
+    </div>
+  )
 }
 
 function mapStateToProps(state) {

@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+  .main {
+    @apply bg-slate-800 max-w-5xl mx-auto p-4 mt-5 rounded-md text-slate-200;
+  }
+}
