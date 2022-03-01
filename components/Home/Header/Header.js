@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux'
 import { signIn } from '../../../redux/Auth/authActions'
 import { connect } from 'react-redux'
 import Loader from '../../Loader'
+import { useRouter } from 'next/router'
 
 export function Header({ user, loading }) {
   const dispatch = useDispatch()
-
-  console.log(user, loading)
+  const router = useRouter()
 
   return (
     <div className={styles.main}>
@@ -17,7 +17,9 @@ export function Header({ user, loading }) {
         <div className={styles.actions}>
           <button
             className={styles.authButton}
-            onClick={() => dispatch(signIn())}
+            onClick={
+              user ? () => router.push('/dashboard') : () => dispatch(signIn())
+            }
           >
             {user ? 'Dashboard' : 'Sign In'}
           </button>
