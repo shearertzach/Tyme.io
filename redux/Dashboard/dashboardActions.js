@@ -7,7 +7,7 @@ export const FETCH_USER_DATA_FAILURE = 'FETCH_USER_DATA_FAILURE'
 
 export const fetchData = (uid) => {
   return (dispatch) => {
-    dispatch(fetchUserDataBegin)
+    dispatch(fetchUserDataBegin())
     const ref = collection(db, 'timesheets')
     const q = query(ref, where('account_id', '==', uid))
     let timesheets = []
