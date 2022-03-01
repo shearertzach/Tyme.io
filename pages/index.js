@@ -1,15 +1,11 @@
-import { connect } from 'react-redux'
+import Header from '../components/Home/Header/Header'
+import Hero from '../components/Home/Hero/Hero'
 
-export function Home() {
+export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2"></div>
+    <div className="min-h-screen">
+      <Header />
+      <Hero />
+    </div>
   )
 }
-
-function mapStateToProps(state) {
-  const { auth } = state
-  const { user, loading } = auth
-  return { user, loading }
-}
-
-export default connect(mapStateToProps)(Home)

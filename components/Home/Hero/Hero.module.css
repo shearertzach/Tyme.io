@@ -1,0 +1,23 @@
+@tailwind components;
+
+@layer components {
+  .hero_list {
+    @apply mt-10 ml-5 text-2xl text-slate-300;
+  }
+
+  .hero_list > li {
+    @apply my-4;
+  }
+}
+
+.layer {
+  background-image: url('../../../public/design/layered-waves-haikei.svg');
+  aspect-ratio: 900/200;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.flip {
+  background-image: url('../../../public/design/layered-waves-haikei-flip.svg');
+}

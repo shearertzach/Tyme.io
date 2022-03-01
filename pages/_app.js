@@ -1,13 +1,29 @@
+import '../styles/globals.css'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import { reducers } from '../redux'
+import { createStore, applyMiddleware } from 'redux'
+import { persistStore, persistReducer } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
+import storage from 'redux-persist/lib/storage'
+import rootReducer from '../redux'
+import thunk from 'redux-thunk'
+import Loader from '../components/Loader'
 
-const store = createStore(reducers)
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const store = createStore(persistedReducer, applyMiddleware(thunk))
+const persistor = persistStore(store)
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <PersistGate loading={<Loader />} persistor={persistor}>
+        <Component {...pageProps} />
+      </PersistGate>
     </Provider>
   )
 }
