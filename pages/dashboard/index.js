@@ -5,6 +5,7 @@ import Loader from '../../components/Loader'
 import { useRouter } from 'next/router'
 import Timesheets from '../../components/Dashboard/Timesheets/Timesheets'
 import Sidebar from '../../components/Dashboard/Sidebar/Sidebar'
+import Clock from '../../components/Dashboard/Clock/Clock'
 
 function Dashboard({ user, data, loading, error }) {
   const dispatch = useDispatch()
@@ -16,8 +17,9 @@ function Dashboard({ user, data, loading, error }) {
     user && dispatch(fetchData(user.account_id))
   }, [])
   return (
-    <div className="ml-72">
+    <div className="ml-16 p-4 xl:ml-72">
       {loading && <Loader />}
+      <Clock user={user} />
       <Sidebar />
       <Timesheets user={user} data={data} />
     </div>
