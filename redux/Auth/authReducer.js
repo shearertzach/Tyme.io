@@ -3,6 +3,7 @@ import {
   SIGN_IN_WITH_PROVIDER_SUCCESS,
   SIGN_IN_WITH_PROVIDER_FAILURE,
   SIGN_OUT_OF_PROVIDER,
+  UPDATE_USER_INFO,
 } from './authActions'
 
 const INITIAL_STATE = {
@@ -30,6 +31,11 @@ const authReducer = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: action.payload,
+      }
+    case UPDATE_USER_INFO:
+      return {
+        ...state,
+        user: action.payload,
       }
     case SIGN_OUT_OF_PROVIDER:
       return {

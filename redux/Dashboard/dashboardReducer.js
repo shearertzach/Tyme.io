@@ -2,6 +2,9 @@ import {
   FETCH_USER_DATA_BEGIN,
   FETCH_USER_DATA_SUCCESS,
   FETCH_USER_DATA_FAILURE,
+  CLOCK_IN_BEGIN,
+  CLOCK_IN_FAILURE,
+  CLOCK_IN_SUCCESS,
 } from './dashboardActions'
 
 const INITIAL_STATE = {
@@ -27,6 +30,21 @@ const dashboardReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         error: action.payload,
+        loading: false,
+      }
+    case CLOCK_IN_BEGIN:
+      return {
+        ...state,
+        loading: true,
+      }
+    case CLOCK_IN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      }
+    case CLOCK_IN_FAILURE:
+      return {
+        ...state,
         loading: false,
       }
     default:

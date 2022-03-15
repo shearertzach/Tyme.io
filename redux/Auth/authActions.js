@@ -6,6 +6,7 @@ export const SIGN_IN_WITH_PROVIDER_BEGIN = 'SIGN_IN_WITH_PROVIDER_BEGIN'
 export const SIGN_IN_WITH_PROVIDER_SUCCESS = 'SIGN_IN_WITH_PROVIDER_SUCCESS'
 export const SIGN_IN_WITH_PROVIDER_FAILURE = 'SIGN_IN_WITH_PROVIDER_FAILURE'
 export const SIGN_OUT_OF_PROVIDER = 'SIGN_OUT_OF_PROVIDER'
+export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
 
 export const signIn = () => {
   return (dispatch) => {
@@ -17,12 +18,20 @@ export const signIn = () => {
         getDocs(q)
           .then((snapshot) => {
             snapshot.forEach((doc) => {
-              dispatch(signInWithProviderSuccess(doc.data()))
+              dispatch(
+                signInWithProviderSuccess({ doc_id: doc.id, ...doc.data() })
+              )
             })
           })
           .catch((err) => dispatch(signInWithProviderFailure(err)))
       })
       .catch((err) => dispatch(signInWithProviderFailure(err)))
+  }
+}
+
+export const updateUser = (doc) => {
+  return (dispatch) => {
+    dispatch(updateUserInfo({ doc_id: doc.id, ...doc.data() }))
   }
 }
 
@@ -38,6 +47,11 @@ export const signInWithProviderSuccess = (userInfo) => ({
 export const signInWithProviderFailure = (err) => ({
   type: SIGN_IN_WITH_PROVIDER_FAILURE,
   payload: err,
+})
+
+export const updateUserInfo = (userInfo) => ({
+  type: UPDATE_USER_INFO,
+  payload: userInfo,
 })
 
 export const signOut = () => ({
