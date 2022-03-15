@@ -1,4 +1,4 @@
-import { auth, db } from '../../firebase'
+import { db } from '../../firebase'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 
 export const FETCH_USER_DATA_BEGIN = 'FETCH_USER_DATA_BEGIN'

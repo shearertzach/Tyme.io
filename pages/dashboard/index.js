@@ -16,12 +16,16 @@ function Dashboard({ user, data, loading, error }) {
   useEffect(() => {
     user && dispatch(fetchData(user.account_id))
   }, [])
+
   return (
     <div className="ml-16 p-4 xl:ml-72">
       {loading && <Loader />}
-      <Clock user={user} />
-      <Sidebar />
-      <Timesheets user={user} data={data} />
+      {!loading &&
+        <div>
+          <Clock user={user} />
+          <Sidebar />
+          <Timesheets user={user} data={data} />
+        </div>}
     </div>
   )
 }

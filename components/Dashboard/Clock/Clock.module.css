@@ -9,18 +9,22 @@
   }
 
   .clock {
-    @apply font-light text-lg rounded-full w-full max-w-sm aspect-square bg-slate-700 border-8 border-green-300 flex flex-col items-center justify-center
+    @apply font-light text-lg rounded-full w-11/12 max-w-sm aspect-square bg-slate-700 border-8 flex flex-col items-center justify-center
   }
   
   .clients {
     @apply relative rounded-lg border-2 px-4 py-2.5 my-3 flex justify-between items-center hover:bg-slate-700 cursor-pointer transition-all
   }
 
-  .clients_dropdown {
+  .dropdown {
     @apply origin-top transition-all absolute top-16 right-0 rounded-lg w-full p-2 bg-slate-200 border-2 border-slate-300 text-slate-700
   }
 
-  .clients_dropdown > button {
+  .dropdown > button {
     @apply rounded-md hover:bg-slate-300 p-1 pl-2 w-full text-left 
+  }
+
+  .clock_action_button {
+    @apply w-full lg:max-w-[250px] border-2 text-black mt-auto  bg-opacity-80 hover:bg-opacity-100 transition-all rounded-lg py-2.5
   }
 }
