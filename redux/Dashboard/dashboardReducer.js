@@ -1,10 +1,10 @@
 import {
-  FETCH_USER_DATA_BEGIN,
-  FETCH_USER_DATA_SUCCESS,
-  FETCH_USER_DATA_FAILURE,
   CLOCK_IN_BEGIN,
   CLOCK_IN_FAILURE,
   CLOCK_IN_SUCCESS,
+  CLOCK_OUT_BEGIN,
+  CLOCK_OUT_SUCCESS,
+  CLOCK_OUT_FAILURE
 } from './dashboardActions'
 
 const INITIAL_STATE = {
@@ -15,23 +15,6 @@ const INITIAL_STATE = {
 
 const dashboardReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case FETCH_USER_DATA_BEGIN:
-      return {
-        ...state,
-        loading: true,
-      }
-    case FETCH_USER_DATA_SUCCESS:
-      return {
-        ...state,
-        data: action.payload,
-        loading: false,
-      }
-    case FETCH_USER_DATA_FAILURE:
-      return {
-        ...state,
-        error: action.payload,
-        loading: false,
-      }
     case CLOCK_IN_BEGIN:
       return {
         ...state,
@@ -43,6 +26,21 @@ const dashboardReducer = (state = INITIAL_STATE, action) => {
         loading: false,
       }
     case CLOCK_IN_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      }
+    case CLOCK_OUT_BEGIN:
+      return {
+        ...state,
+        loading: true,
+      }
+    case CLOCK_OUT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      }
+    case CLOCK_OUT_FAILURE:
       return {
         ...state,
         loading: false,

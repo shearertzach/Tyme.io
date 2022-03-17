@@ -1,5 +1,6 @@
 import { db } from '../../firebase'
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -9,33 +10,18 @@ import {
   where,
 } from 'firebase/firestore'
 
-export const FETCH_USER_DATA_BEGIN = 'FETCH_USER_DATA_BEGIN'
-export const FETCH_USER_DATA_SUCCESS = 'FETCH_USER_DATA_SUCCESS'
-export const FETCH_USER_DATA_FAILURE = 'FETCH_USER_DATA_FAILURE'
-
 export const CLOCK_IN_BEGIN = 'CLOCK_IN_BEGIN'
 export const CLOCK_IN_SUCCESS = 'CLOCK_IN_SUCCESS'
 export const CLOCK_IN_FAILURE = 'CLOCK_IN_FAILURE'
 
-export const fetchData = (uid) => {
-  return (dispatch) => {
-    dispatch(fetchUserDataBegin())
-    const ref = collection(db, 'timesheets')
-    const q = query(ref, where('account_id', '==', uid))
-    let timesheets = []
-    getDocs(q)
-      .then((snapshot) => {
-        snapshot.forEach((doc) => (timesheets = [...timesheets, doc.data()]))
-        dispatch(fetchUserDataSuccess(timesheets))
-      })
-      .catch((err) => dispatch(fetchUserDataFailure(err)))
-  }
-}
+export const CLOCK_OUT_BEGIN = 'CLOCK_OUT_BEGIN'
+export const CLOCK_OUT_SUCCESS = 'CLOCK_OUT_SUCCESS'
+export const CLOCK_OUT_FAILURE = 'CLOCK_OUT_FAILURE'
 
-export const clockIn = (uid, client) => {
+export const clockIn = (userDocId, client) => {
   return (dispatch) => {
     dispatch(clockInBegin())
-    updateDoc(doc(db, 'users', uid), {
+    updateDoc(doc(db, 'users', userDocId), {
       clocked_info: {
         client_name: client,
         clocked_in: true,
@@ -47,17 +33,30 @@ export const clockIn = (uid, client) => {
   }
 }
 
-export const fetchUserDataBegin = () => ({
-  type: FETCH_USER_DATA_BEGIN,
-})
-export const fetchUserDataSuccess = (data) => ({
-  type: FETCH_USER_DATA_SUCCESS,
-  payload: data,
-})
-export const fetchUserDataFailure = (err) => ({
-  type: FETCH_USER_DATA_FAILURE,
-  payload: err,
-})
+export const clockOut = (userDocId, userId, client, timeIn) => {
+  return (dispatch) => {
+    dispatch(clockOutBegin())
+    updateDoc(doc(db, 'users', userDocId), {
+      clocked_info: {
+        client_name: null,
+        clocked_in: false,
+        time_clocked_in: false,
+      },
+    })
+      .then(() => {
+        addDoc(collection(db, 'timesheets'), {
+          user_id: userId,
+          client: client,
+          time_clocked_in: timeIn,
+          time_clocked_out: Timestamp.fromDate(new Date()),
+          duration: (Timestamp.fromDate(new Date()).seconds - timeIn.seconds) * 1000
+        })
+          .then(() => dispatch(clockOutSuccess()))
+          .catch(() => dispatch(clockOutFailure()))
+      })
+      .catch(() => dispatch(clockOutFailure()))
+  }
+}
 
 export const clockInBegin = () => ({
   type: CLOCK_IN_BEGIN,
@@ -67,4 +66,14 @@ export const clockInSuccess = () => ({
 })
 export const clockInFailure = () => ({
   type: CLOCK_IN_FAILURE,
+})
+
+export const clockOutBegin = () => ({
+  type: CLOCK_OUT_BEGIN,
+})
+export const clockOutSuccess = () => ({
+  type: CLOCK_OUT_SUCCESS,
+})
+export const clockOutFailure = () => ({
+  type: CLOCK_OUT_FAILURE,
 })

@@ -8,6 +8,7 @@ export const SIGN_IN_WITH_PROVIDER_FAILURE = 'SIGN_IN_WITH_PROVIDER_FAILURE'
 export const SIGN_OUT_OF_PROVIDER = 'SIGN_OUT_OF_PROVIDER'
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
 
+
 export const signIn = () => {
   return (dispatch) => {
     dispatch(signInWithProviderBegin())
@@ -51,7 +52,7 @@ export const signInWithProviderFailure = (err) => ({
 
 export const updateUserInfo = (userInfo) => ({
   type: UPDATE_USER_INFO,
-  payload: userInfo,
+  payload: userInfo
 })
 
 export const signOut = () => ({

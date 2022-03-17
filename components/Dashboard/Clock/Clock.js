@@ -1,15 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './Clock.module.css'
-import { ChevronDownIcon } from '@heroicons/react/outline'
 import { useDispatch } from 'react-redux'
-import { clockIn } from '../../../redux/Dashboard/dashboardActions'
+import { clockIn, clockOut } from '../../../redux/Dashboard/dashboardActions'
+import Dropdown from '../../Dropdown'
+import { formatTime } from '../../../lib/clock'
 
 export default function Clock({ user }) {
-  const [currentClient, setCurrentClient] = useState(
-    user.clocked_info.client_name || 'None'
-  )
-  const [dropdown, setDropdown] = useState(false)
+  const [currentClient, setCurrentClient] = useState(user.clocked_info.client_name || 'None')
+  const [clockDisplayInfo, setClockDisplayInfo] = useState(null)
   const dispatch = useDispatch()
+  const userClockedIn = user.clocked_info.clocked_in
+
+  useEffect(() => {
+    if (userClockedIn) {
+      const now = Date.now()
+      const difference = now - (user.clocked_info.time_clocked_in.seconds * 1000)
+      const interval = setInterval(() => {
+        setClockDisplayInfo(formatTime(difference))
+      }, 1000);
+      return () => clearInterval(interval)
+    }
+  }, [clockDisplayInfo])
 
   return (
     <div className={styles.main}>
@@ -18,67 +29,43 @@ export default function Clock({ user }) {
           <div
             className={
               styles.clock +
-              ` ${
-                user.clocked_info.clocked_in
-                  ? 'border-green-300'
-                  : 'border-red-300'
+              ` ${userClockedIn
+                ? 'border-green-300'
+                : 'border-red-300'
               }`
             }
           >
-            {user.clocked_info.clocked_in && (
-              <div className="flex flex-col items-center justify-center">
-                <p>2 hours</p>
-                <p>30 minutes</p>
-                <p>52 seconds</p>
-              </div>
+            {userClockedIn && (
+              <>
+                {!clockDisplayInfo && <p>Loading...</p>}
+                {clockDisplayInfo && (clockDisplayInfo.days > 0 && <p>{clockDisplayInfo.days} day(s)</p>)}
+                {clockDisplayInfo && (clockDisplayInfo.hours % 24 > 0 && <p>{clockDisplayInfo.hours % 24} hours(s)</p>)}
+                {clockDisplayInfo && (clockDisplayInfo.minutes % 60 > 0 && <p>{clockDisplayInfo.minutes % 60} minute(s)</p>)}
+                {clockDisplayInfo && <p>{clockDisplayInfo.seconds % 60} second(s)</p>}
+              </>
             )}
-            {!user.clocked_info.clocked_in && <p>Clocked Out</p>}
+            {!userClockedIn && <p>Clocked Out</p>}
           </div>
         </div>
         <div className="col-span-2 mt-10 flex flex-col lg:mt-0 lg:items-end">
           <p className="text-lg">Client</p>
-          <div className="relative w-full lg:max-w-[250px]">
-            <div
-              className={styles.clients}
-              onClick={() => setDropdown(!dropdown)}
-            >
-              {currentClient}
-              <ChevronDownIcon
-                className={`h-6 w-6 transition-all duration-300 ${
-                  dropdown && 'rotate-180'
-                }`}
-              />
-            </div>
-            <div
-              className={
-                styles.dropdown + ` ${dropdown ? 'scale-y-100' : 'scale-y-0'}`
-              }
-            >
-              {user.clients.map((c) => (
-                <button
-                  onClick={() => {
-                    setCurrentClient(c)
-                    setDropdown(!dropdown)
-                  }}
-                >
-                  {c}
-                </button>
-              ))}
-              {user.clients.length === 0 && <p>No Clients Available</p>}
-            </div>
-          </div>
+          <Dropdown
+            setCurrent={setCurrentClient}
+            current={currentClient}
+            dataset={user.clients}
+            disabled={userClockedIn}
+          />
           <button
             className={
               styles.clock_action_button +
-              ` ${
-                user.clocked_info.clocked_in
-                  ? 'border-red-400 bg-red-300'
-                  : 'border-green-400 bg-green-300'
-              }`
+              ` ${userClockedIn
+                ? 'border-red-400 bg-red-300'
+                : 'border-green-400 bg-green-300'
+              } ${currentClient === "None" && "border-slate-400 bg-slate-300 cursor-default"}`
             }
-            onClick={() => dispatch(clockIn(user.doc_id, currentClient))}
+            onClick={() => currentClient !== "None" && (userClockedIn ? dispatch(clockOut(user.doc_id, user.account_id, user.clocked_info.client_name, user.clocked_info.time_clocked_in)) : dispatch(clockIn(user.doc_id, currentClient)))}
           >
-            {user.clocked_info.clocked_in ? 'Clock Out' : 'Clock In'}
+            {userClockedIn ? 'Clock Out' : 'Clock In'}
           </button>
         </div>
       </div>
