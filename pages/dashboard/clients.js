@@ -3,16 +3,14 @@ import { connect, useDispatch } from 'react-redux'
 import Loader from '../../components/Loader'
 import { useRouter } from 'next/router'
 import Sidebar from '../../components/Dashboard/Sidebar/Sidebar'
-import Clock from '../../components/Dashboard/Clock/Clock'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { updateUser } from '../../redux/Auth/authActions'
 import { db } from '../../firebase'
+import ClientList from '../../components/Dashboard/ClientList/ClientList'
 
-function Dashboard({ user, loading, error }) {
+function Clients({ user, loading, error }) {
   const dispatch = useDispatch()
   const router = useRouter()
-
-  console.log(user)
 
   if (!user) router.push('/')
 
@@ -25,9 +23,9 @@ function Dashboard({ user, loading, error }) {
   return (
     <div className="ml-16 p-4 xl:ml-72">
       {loading && <Loader />}
-      {!loading && !error && (
+      {!loading && (
         <>
-          <Clock user={user} />
+          <ClientList user={user} />
           <Sidebar />
         </>
       )}
@@ -36,10 +34,10 @@ function Dashboard({ user, loading, error }) {
 }
 
 function mapStateToProps(state) {
-  const { dashboard, auth } = state
+  const { clients, auth } = state
   const { user } = auth
-  const { loading, error } = dashboard
+  const { loading, error } = clients
   return { user, loading, error }
 }
 
-export default connect(mapStateToProps)(Dashboard)
+export default connect(mapStateToProps)(Clients)

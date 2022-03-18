@@ -1,5 +1,13 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore'
 import { auth, db } from '../../firebase'
 
 export const SIGN_IN_WITH_PROVIDER_BEGIN = 'SIGN_IN_WITH_PROVIDER_BEGIN'
@@ -8,31 +16,41 @@ export const SIGN_IN_WITH_PROVIDER_FAILURE = 'SIGN_IN_WITH_PROVIDER_FAILURE'
 export const SIGN_OUT_OF_PROVIDER = 'SIGN_OUT_OF_PROVIDER'
 export const UPDATE_USER_INFO = 'UPDATE_USER_INFO'
 
-
 export const signIn = () => {
-  return (dispatch) => {
-    dispatch(signInWithProviderBegin())
-    signInWithPopup(auth, new GoogleAuthProvider())
-      .then((res) => {
-        const ref = collection(db, 'users')
-        const q = query(ref, where('account_id', '==', res.user.uid))
-        getDocs(q)
-          .then((snapshot) => {
-            snapshot.forEach((doc) => {
-              dispatch(
-                signInWithProviderSuccess({ doc_id: doc.id, ...doc.data() })
-              )
-            })
-          })
-          .catch((err) => dispatch(signInWithProviderFailure(err)))
-      })
-      .catch((err) => dispatch(signInWithProviderFailure(err)))
+  return async (dispatch) => {
+    try {
+      dispatch(signInWithProviderBegin())
+      const signInRef = await signInWithPopup(auth, new GoogleAuthProvider())
+      const user = signInRef.user
+      const userDocumentRef = doc(db, 'users', user.uid)
+      const userDocument = await getDoc(userDocumentRef)
+      const userData = userDocument.data()
+      if (userDocument.exists()) {
+        dispatch(signInWithProviderSuccess(userData))
+      } else {
+        const data = {
+          user_id: user.uid,
+          clients: [],
+          clocked_info: {
+            client_name: null,
+            clocked_in: false,
+            time_clocked_in: null,
+          },
+          email: user.email,
+          name: user.displayName,
+        }
+        await setDoc(doc(db, 'users', user.uid), data)
+        dispatch(signInWithProviderSuccess(data))
+      }
+    } catch (e) {
+      dispatch(signInWithProviderFailure(e))
+    }
   }
 }
 
 export const updateUser = (doc) => {
   return (dispatch) => {
-    dispatch(updateUserInfo({ doc_id: doc.id, ...doc.data() }))
+    dispatch(updateUserInfo(doc.data()))
   }
 }
 
@@ -52,7 +70,7 @@ export const signInWithProviderFailure = (err) => ({
 
 export const updateUserInfo = (userInfo) => ({
   type: UPDATE_USER_INFO,
-  payload: userInfo
+  payload: userInfo,
 })
 
 export const signOut = () => ({

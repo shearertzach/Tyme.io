@@ -1,0 +1,48 @@
+@tailwind components;
+
+@layer components {
+  .main {
+    @apply mx-auto max-w-5xl rounded-md bg-slate-800 p-4 text-slate-200;
+  }
+
+  .add_button {
+    @apply rounded-md border-2 border-slate-200 py-1 px-2.5 transition-all hover:bg-slate-200 hover:text-slate-800;
+  }
+
+  .client_list {
+    @apply rounded-md bg-slate-600 overflow-hidden;
+  }
+
+  .client_list > div {
+    @apply relative flex w-full items-center justify-between overflow-hidden py-4 pl-4 hover:bg-slate-700 transition-all;
+  }
+
+  .client_list > div > button {
+    @apply absolute right-0 h-full scale-x-0 bg-red-400 px-2 transition-all origin-right ease-in-out;
+  }
+
+  .client_list > div > button:hover {
+    @apply bg-red-500
+  }
+
+  .client_list > div:hover > button {
+    @apply scale-x-100;
+  }
+
+  .add_client {
+    @apply absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 transform bg-slate-300 p-4 rounded-md z-20 w-full max-w-lg
+  }
+
+  .add_client > input {
+    @apply p-2 rounded-md w-full py-3 outline-none text-slate-500
+  }
+
+  .add_client > button {
+    @apply w-full mt-5 bg-green-400 text-slate-800 font-medium rounded-md py-2 bg-opacity-50 hover:bg-opacity-100 transition-all
+  }
+
+  .backdrop {
+    @apply absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10
+  }
+
+}

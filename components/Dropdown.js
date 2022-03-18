@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export default function Dropdown({ dataset, current, setCurrent, disabled }) {
   const [dropdown, setDropdown] = useState(false)
   return (
-    <div className="relative w-full lg:max-w-[250px]">
+    <div className="relative w-full lg:max-w-[250px] min-w-[250px]">
       <div
         className={`relative rounded-lg border-2 px-4 py-2.5 my-3 flex justify-between items-center transition-all ${disabled ? "cursor-default opacity-50" : "cursor-pointer hover:bg-slate-700"}`}
         onClick={() => !disabled && setDropdown(!dropdown)}
@@ -16,7 +16,7 @@ export default function Dropdown({ dataset, current, setCurrent, disabled }) {
         {dataset.map((d) => (
           <button
             key={d}
-            className='rounded-md hover:bg-slate-300 p-1 pl-2 w-full text-left '
+            className='rounded-md hover:bg-slate-300 p-2 pl-2 w-full text-left '
             onClick={() => {
               setCurrent(d)
               setDropdown(!dropdown)
@@ -26,7 +26,7 @@ export default function Dropdown({ dataset, current, setCurrent, disabled }) {
           </button>
         ))}
         <button
-          className='rounded-md hover:bg-slate-300 p-1 pl-2 w-full text-left '
+          className='rounded-md hover:bg-slate-300 p-2 pl-2 w-full text-left '
           onClick={() => {
             setCurrent("None")
             setDropdown(!dropdown)

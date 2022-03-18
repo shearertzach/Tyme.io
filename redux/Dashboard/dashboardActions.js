@@ -18,10 +18,10 @@ export const CLOCK_OUT_BEGIN = 'CLOCK_OUT_BEGIN'
 export const CLOCK_OUT_SUCCESS = 'CLOCK_OUT_SUCCESS'
 export const CLOCK_OUT_FAILURE = 'CLOCK_OUT_FAILURE'
 
-export const clockIn = (userDocId, client) => {
+export const clockIn = (userId, client) => {
   return (dispatch) => {
     dispatch(clockInBegin())
-    updateDoc(doc(db, 'users', userDocId), {
+    updateDoc(doc(db, 'users', userId), {
       clocked_info: {
         client_name: client,
         clocked_in: true,
@@ -33,10 +33,10 @@ export const clockIn = (userDocId, client) => {
   }
 }
 
-export const clockOut = (userDocId, userId, client, timeIn) => {
+export const clockOut = (userId, client, timeIn) => {
   return (dispatch) => {
     dispatch(clockOutBegin())
-    updateDoc(doc(db, 'users', userDocId), {
+    updateDoc(doc(db, 'users', userId), {
       clocked_info: {
         client_name: null,
         clocked_in: false,
@@ -49,7 +49,8 @@ export const clockOut = (userDocId, userId, client, timeIn) => {
           client: client,
           time_clocked_in: timeIn,
           time_clocked_out: Timestamp.fromDate(new Date()),
-          duration: (Timestamp.fromDate(new Date()).seconds - timeIn.seconds) * 1000
+          duration:
+            (Timestamp.fromDate(new Date()).seconds - timeIn.seconds) * 1000,
         })
           .then(() => dispatch(clockOutSuccess()))
           .catch(() => dispatch(clockOutFailure()))
